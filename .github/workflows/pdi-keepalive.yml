@@ -1,0 +1,26 @@
+name: Keep ServiceNow PDI Alive
+
+on:
+  schedule:
+    - cron: "0 */12 * * *"   # 매일 12시간마다 실행
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping ServiceNow PDI
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+          -u ${{ secrets.SN_USER }}:${{ secrets.SN_PASS }} \
+          -H "User-Agent: pdi-keepalive" \
+          --max-time 30 \
+          https://${{ secrets.SN_INSTANCE }}.service-now.com/api/now/table/sys_user?sysparm_limit=1)
+
+          echo "HTTP Status: $STATUS"
+
+          if [ "$STATUS" != "200" ]; then
+            echo "Ping failed"
+            exit 1
+          fi
