@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug instance
+        run: echo "Instance=${{ secrets.SN_INSTANCE }}"
       - name: Ping ServiceNow PDI
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
