@@ -18,7 +18,7 @@ jobs:
           -u ${{ secrets.SN_USER }}:${{ secrets.SN_PASS }} \
           -H "User-Agent: pdi-keepalive" \
           --max-time 30 \
-          https://${{ secrets.SN_INSTANCE }}.service-now.com/api/now/table/sys_user?sysparm_limit=1)
+          https://${{ secrets.SN_INSTANCE }}.service-now.com/
 
           echo "HTTP Status: $STATUS"
 
