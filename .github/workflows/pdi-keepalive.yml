@@ -2,7 +2,7 @@ name: Keep ServiceNow PDI Alive
 
 on:
   schedule:
-    - cron: "0 */12 * * *"   # 매일 12시간마다 실행
+    - cron: "0 */12 * * *"
   workflow_dispatch:
 
 jobs:
@@ -10,15 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Debug instance
-        run: echo "Instance=${{ secrets.SN_INSTANCE }}"
+      - name: Debug secrets
+        run: |
+          echo "INSTANCE=${{ secrets.SN_INSTANCE }}"
+          echo "USER=${{ secrets.SN_USER }}"
+
       - name: Ping ServiceNow PDI
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-          -u ${{ secrets.SN_USER }}:${{ secrets.SN_PASS }} \
-          -H "User-Agent: pdi-keepalive" \
-          --max-time 30 \
-          https://${{ secrets.SN_INSTANCE }}.service-now.com/
+            -u "${{ secrets.SN_USER }}:${{ secrets.SN_PASS }}" \
+            -H "User-Agent: pdi-keepalive" \
+            --max-time 30 \
+            "https://${{ secrets.SN_INSTANCE }}.service-now.com/")
 
           echo "HTTP Status: $STATUS"
 
